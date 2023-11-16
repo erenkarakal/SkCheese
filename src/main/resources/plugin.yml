@@ -1,0 +1,9 @@
+name: SkCheese
+version: '${project.version}'
+main: me.eren.skcheese.SkCheese
+api-version: '1.13'
+depend:
+  - Skript
+authors:
+  - eren.
+  - Sovde
