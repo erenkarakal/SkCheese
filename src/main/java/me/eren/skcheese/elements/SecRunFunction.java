@@ -52,7 +52,6 @@ public class SecRunFunction extends Section {
 
     @Override
     protected TriggerItem walk(@NotNull Event e) {
-        getParser().setCurrentEvent("SecRunFunction", e.getClass());
         // put the parameters in correct order!
         int size = func.getSignature().getMaxParameters();
         Object[][] params = new Object[size][1];
@@ -63,7 +62,7 @@ public class SecRunFunction extends Section {
                 params[i] = expr.getAll(e);
             i++;
         }
-        Object[] returnValue = func.execute((FunctionEvent<?>) e, params);
+        Object[] returnValue = func.execute(params);
         if (expression != null)
             expression.change(e, returnValue, Changer.ChangeMode.SET);
         return getNext();
