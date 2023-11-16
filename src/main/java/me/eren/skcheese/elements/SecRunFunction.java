@@ -9,7 +9,6 @@ import ch.njol.skript.lang.function.FunctionEvent;
 import ch.njol.skript.lang.function.Functions;
 import ch.njol.skript.lang.function.Parameter;
 import ch.njol.util.Kleenean;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.skriptlang.skript.lang.entry.EntryContainer;
@@ -60,10 +59,8 @@ public class SecRunFunction extends Section {
         int i = 0;
         for (Parameter<?> parameter : func.getSignature().getParameters()) {
             Expression<?> expr = map.get(parameter.getName());
-            if (expr != null) {
+            if (expr != null)
                 params[i] = expr.getAll(e);
-                Bukkit.broadcastMessage(Arrays.toString(params[i]));
-            }
             i++;
         }
         Object[] returnValue = func.execute((FunctionEvent<?>) e, params);
