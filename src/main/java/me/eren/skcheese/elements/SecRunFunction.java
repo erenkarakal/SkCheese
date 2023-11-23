@@ -20,7 +20,7 @@ import java.util.*;
 public class SecRunFunction extends Section {
 
     static {
-        Skript.registerSection(SecRunFunction.class, "(execute|run) function <.+> [and store it in %~-objects%]");
+        Skript.registerSection(SecRunFunction.class, "(execute|run) function <.+> [and store it in %-~objects%]");
     }
 
     private Function<?> func;
