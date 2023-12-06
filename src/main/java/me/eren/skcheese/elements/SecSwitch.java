@@ -7,13 +7,9 @@ import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.Literal;
-import ch.njol.skript.lang.Section;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.TriggerItem;
-import ch.njol.skript.lang.TriggerSection;
+import ch.njol.skript.lang.*;
 import ch.njol.skript.lang.parser.ParserInstance;
+import ch.njol.skript.lang.util.SimpleLiteral;
 import ch.njol.skript.util.LiteralUtils;
 import ch.njol.util.Kleenean;
 import com.google.common.collect.Iterables;
@@ -37,7 +33,7 @@ public class SecSwitch extends Section {
 
     static {
         Skript.registerSection(SecSwitch.class, "switch %~object%");
-        Skript.registerSection(SecSwitchCase.class, "case %*object%");
+        Skript.registerSection(SecSwitchCase.class, "case %object%");
     }
 
     Map<Object, SecSwitchCase> cases = new HashMap<>();
@@ -94,6 +90,9 @@ public class SecSwitch extends Section {
         if (input == null) {
             return null;
         }
+        if (!cases.containsKey(input)) {
+            return null;
+        }
         Section toRun = cases.get(input);
         setTriggerItems(toRun == null ? new ArrayList<>() : Collections.singletonList(toRun));
         return walk(event, true);
@@ -116,7 +115,17 @@ public class SecSwitch extends Section {
                 return false;
             }
 
-            value = (Literal<?>) LiteralUtils.defendExpression(expressions[0]);
+            // literal check
+            if (expressions[0] instanceof VariableString variableString) {
+                if (!variableString.isSimple()) {
+                    Skript.error("String is not a literal, remove expressions from the string");
+                    return false;
+                }
+                value = new SimpleLiteral<>(variableString.toString(null), false);
+            }
+            else if (LiteralUtils.defendExpression(expressions[0]) instanceof Literal<?> literal) {
+                value = literal;
+            }
             loadOptionalCode(sectionNode);
             return LiteralUtils.canInitSafely(value);
         }

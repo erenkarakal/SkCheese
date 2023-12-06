@@ -3,9 +3,11 @@ package me.eren.skcheese.elements;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.SectionNode;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
 import ch.njol.skript.lang.function.Function;
-import ch.njol.skript.lang.function.FunctionEvent;
 import ch.njol.skript.lang.function.Functions;
 import ch.njol.skript.lang.function.Parameter;
 import ch.njol.util.Kleenean;
@@ -16,6 +18,10 @@ import org.skriptlang.skript.lang.entry.EntryValidator;
 import org.skriptlang.skript.lang.entry.util.ExpressionEntryData;
 
 import java.util.*;
+
+@Name("Run Function")
+@Description("Executes a function using a section. Pass parameters by doing 'parameter name: value'")
+@Since("1.0")
 
 public class SecRunFunction extends Section {
 
