@@ -29,53 +29,74 @@ public class SecRunFunction extends Section {
         Skript.registerSection(SecRunFunction.class, "(execute|run) function <.+> [and store it in %-~objects%]");
     }
 
-    private Function<?> func;
-    private final Map<String, Expression<?>> map = new HashMap<>();
-    private Expression<?> expression;
+    private Function<?> function;
+    private final Map<String, Expression<?>> paramExpression = new LinkedHashMap<>();
+    private Expression<?> storeExpression;
 
-    //@SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult, @NotNull SectionNode sectionNode, @NotNull List<TriggerItem> triggerItems) {
-        func = Functions.getFunction(parseResult.regexes.get(0).group(0), getParser().getCurrentScript().toString());
-        if (func == null) {
-            Skript.error("Function \"" + parseResult.regexes.get(0).group(0) + "\" doesn't exist.");
+    public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult, @NotNull SectionNode sectionNode, @NotNull List<TriggerItem> triggerItems) {
+        String functionName = parseResult.regexes.get(0).group(0);
+        function = Functions.getFunction(functionName, getParser().getCurrentScript().toString());
+
+        if (function == null) {
+            Skript.error("Function \"" + functionName + "\" doesn't exist.");
             return false;
         }
+
+        if (expressions[0] != null) {
+            storeExpression = expressions[0];
+            if (function.getReturnType() == null) {
+                Skript.error("The output of function \"" + functionName + "\" can not be stored because it does not return anything.");
+                return false;
+            }
+            if (!Changer.ChangerUtils.acceptsChange(storeExpression, Changer.ChangeMode.SET, function.getReturnType().getC())) {
+                Skript.error(storeExpression.toString() + "can not store objects of type " + function.getReturnType().getCodeName());
+                return false;
+            }
+        }
+
+        Parameter<?>[] parameters = function.getSignature().getParameters();
+
         EntryValidator.EntryValidatorBuilder builder = EntryValidator.builder();
-        for (Parameter<?> parameter : func.getSignature().getParameters()) {
+        for (Parameter<?> parameter : parameters) {
             Expression<?> defaultValue = parameter.getDefaultExpression();
             boolean optional = defaultValue != null;
-            builder.addEntryData(new ExpressionEntryData<>(parameter.getName(), defaultValue, optional, (Class) parameter.getType().getC()));
+            builder.addEntryData(createEntryData(parameter.getName(), defaultValue, optional, parameter.getType().getC()));
         }
         EntryContainer container = builder.build().validate(sectionNode);
         if (container == null) return false;
-        for (Parameter<?> parameter : func.getSignature().getParameters()) {
-            map.put(parameter.getName(), container.getOptional(parameter.getName(), Expression.class, true));
-        }
-        expression = parseResult.exprs[0];
+
+        for (Parameter<?> parameter : parameters)
+            paramExpression.put(parameter.getName(), container.getOptional(parameter.getName(), Expression.class, true));
+
         return true;
     }
 
     @Override
-    protected TriggerItem walk(@NotNull Event e) {
-        // put the parameters in correct order!
-        int size = func.getSignature().getMaxParameters();
-        Object[][] params = new Object[size][1];
+    protected TriggerItem walk(@NotNull Event event) {
+        int size = function.getSignature().getMaxParameters();
+        Object[][] params = new Object[size][0];
+
         int i = 0;
-        for (Parameter<?> parameter : func.getSignature().getParameters()) {
-            Expression<?> expr = map.get(parameter.getName());
-            if (expr != null)
-                params[i] = expr.getAll(e);
+        for (Parameter<?> parameter : function.getSignature().getParameters()) {
+            Expression<?> expr = paramExpression.get(parameter.getName());
+            if (expr != null) params[i] = expr.getAll(event);
             i++;
         }
-        Object[] returnValue = func.execute(params);
-        if (expression != null)
-            expression.change(e, returnValue, Changer.ChangeMode.SET);
+
+        Object[] returnValue = function.execute(params);
+        if (storeExpression != null) storeExpression.change(event, returnValue, Changer.ChangeMode.SET);
         return getNext();
     }
 
     @Override
     public @NotNull String toString(Event e, boolean debug) {
-        return "execute function " + func.getName() + ":";
+        return "execute function " + function.getName() + ":";
     }
+
+    @SuppressWarnings("unchecked")
+    private static <T> ExpressionEntryData<T> createEntryData(String name, Expression<?> defaultValue, boolean optional, Class<?> type) {
+        return new ExpressionEntryData<>(name, (Expression<T>) defaultValue, optional, (Class<T>) type);
+    }
+
 }
