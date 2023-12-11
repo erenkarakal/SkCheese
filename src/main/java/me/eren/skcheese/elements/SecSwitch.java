@@ -1,27 +1,23 @@
 package me.eren.skcheese.elements;
 
-import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
-import ch.njol.skript.config.Node;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
-import ch.njol.skript.lang.parser.ParserInstance;
-import ch.njol.skript.lang.util.SimpleLiteral;
+import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.util.LiteralUtils;
 import ch.njol.util.Kleenean;
-import com.google.common.collect.Iterables;
+import me.eren.skcheese.utils.SkriptUtil;
+import me.eren.skcheese.utils.UnlockedTrigger;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.lang.comparator.Comparators;
+import org.skriptlang.skript.lang.comparator.Relation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Name("Switch Case")
 @Description("The switch case executes one statement from multiple ones. " +
@@ -33,79 +29,94 @@ public class SecSwitch extends Section {
 
     static {
         Skript.registerSection(SecSwitch.class, "switch %~object%");
-        Skript.registerSection(SecSwitchCase.class, "case %object%");
+        Skript.registerSection(SecSwitchCase.class,
+                "case %objects%",
+                "case (none|not set)",
+                "default");
     }
 
-    Map<Object, SecSwitchCase> cases = new HashMap<>();
-    Expression<?> input;
+    private final List<SecSwitchCase> cases = new LinkedList<>();
+    private SecSwitchCase defaultCase;
+    private Expression<?> input;
 
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult, @NotNull SectionNode sectionNode, @NotNull List<TriggerItem> triggerItems) {
 
         input = LiteralUtils.defendExpression(expressions[0]);
 
-        ParserInstance parser = getParser();
-        int nonEmptyNodeCount = Iterables.size(sectionNode);
-        if (nonEmptyNodeCount < 2) {
+        List<TriggerSection> sections = new ArrayList<>(getParser().getCurrentSections());
+        sections.add(this);
+        UnlockedTrigger trigger = SkriptUtil.loadCode(
+                getParser(),
+                new SectionSkriptEvent("switch", this),
+                "switch",
+                null,
+                new SimpleEvent(),
+                sectionNode,
+                sections,
+                getParser().getCurrentEvents()
+        );
+
+        if (trigger.getItems().size() < 2) {
             Skript.error("Switch sections must contain at least two conditions");
             return false;
         }
 
-        List<TriggerSection> sections = parser.getCurrentSections();
-        sections.add(this);
-        parser.setCurrentSections(sections);
-        Kleenean hasDelayAfter = isDelayed;
-        for (Node childNode : sectionNode) {
-            if (!(childNode instanceof SectionNode)) {
+        for (TriggerItem item : trigger.getItems()) {
+            if (!(item instanceof SecSwitchCase switchCase)) {
                 Skript.error("Switch sections may only contain case sections");
                 return false;
             }
-            String childKey = childNode.getKey();
-            if (childKey != null) {
-                childKey = ScriptLoader.replaceOptions(childKey);
-
-                parser.setNode(childNode);
-                parser.setHasDelayBefore(isDelayed);
-                Section section = Section.parse(childKey, "Can't understand this condition: '" + childKey + "'", (SectionNode) childNode, new ArrayList<>());
-                // if this condition was invalid, don't bother parsing the rest
-                if (!(section instanceof SecSwitchCase)) {
-                    Skript.error("Switch sections may only contain case sections");
+            if (switchCase.isDefault()) {
+                if (defaultCase != null) {
+                    Skript.error("Switch sections may only have one default case section");
                     return false;
                 }
-                cases.put(((SecSwitchCase) section).getValue(), (SecSwitchCase) section);
-                if (!parser.getHasDelayBefore().isTrue()) {
-                    hasDelayAfter = parser.getHasDelayBefore();
-                }
-                parser.setHasDelayBefore(isDelayed);
+                defaultCase = switchCase;
+                continue;
             }
+
+            cases.add(switchCase);
         }
-        parser.setNode(sectionNode);
-        parser.setHasDelayBefore(hasDelayAfter);
-        return LiteralUtils.canInitSafely(input);
+
+        if (defaultCase == null) {
+            Skript.error("Switch sections need to have a default case section");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     protected @Nullable TriggerItem walk(@NotNull Event event) {
-        Object input = this.input.getSingle(event);
-        if (input == null) {
-            return null;
+        Object value = input.getSingle(event);
+        SecSwitchCase found = null;
+
+        for (SecSwitchCase switchCase : cases) {
+            if (!switchCase.matches(value, event)) continue;
+            found = switchCase;
+            break;
         }
-        if (!cases.containsKey(input)) {
-            return null;
-        }
-        Section toRun = cases.get(input);
-        setTriggerItems(toRun == null ? new ArrayList<>() : Collections.singletonList(toRun));
-        return walk(event, true);
+
+        if (found == null) found = defaultCase;
+
+        found.trigger().execute(event);
+
+        return getNext();
     }
 
 
     @Override
-    public @NotNull String toString(@Nullable Event event, boolean debug) {
+    public @NotNull String toString(Event event, boolean debug) {
         return "switch " + input.toString(event, debug);
     }
 
     public static class SecSwitchCase extends Section {
-        private Literal<?> value;
+
+        private Trigger trigger;
+        private @Nullable Expression<?> expression;
+        private boolean isDefault = false;
+
 
         @Override
         public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult, @NotNull SectionNode sectionNode, @NotNull List<TriggerItem> triggerItems) {
@@ -115,33 +126,51 @@ public class SecSwitch extends Section {
                 return false;
             }
 
-            // literal check
-            if (expressions[0] instanceof VariableString variableString) {
-                if (!variableString.isSimple()) {
-                    Skript.error("String is not a literal, remove expressions from the string");
-                    return false;
-                }
-                value = new SimpleLiteral<>(variableString.toString(null), false);
-            }
-            else if (LiteralUtils.defendExpression(expressions[0]) instanceof Literal<?> literal) {
-                value = literal;
-            }
-            loadOptionalCode(sectionNode);
-            return LiteralUtils.canInitSafely(value);
+            if (matchedPattern == 0) expression = LiteralUtils.defendExpression(expressions[0]);
+            if (matchedPattern == 2) isDefault = true;
+
+            trigger = SkriptUtil.loadCode(
+                    getParser(),
+                    new SectionSkriptEvent("case", this),
+                    "case",
+                    null,
+                    new SimpleEvent(),
+                    sectionNode,
+                    getParser().getCurrentSections(),
+                    getParser().getCurrentEvents()
+            );
+
+            trigger.setNext(null);
+
+            return matchedPattern != 0 || LiteralUtils.canInitSafely(expression);
+        }
+
+        public boolean matches(Object input, Event event) {
+            if (isDefault) return true;
+            if (expression == null) return input == null;
+            return Arrays.stream(expression.getAll(event)).anyMatch(obj -> Comparators.compare(input, obj) == Relation.EQUAL);
+        }
+
+        public Trigger trigger() {
+            return trigger;
+        }
+
+        public boolean isDefault() {
+            return isDefault;
         }
 
         @Override
         protected @Nullable TriggerItem walk(@NotNull Event event) {
-            return walk(event, true);
-        }
-
-        public Object getValue() {
-            return value.getSingle();
+            return null;
         }
 
         @Override
-        public @NotNull String toString(@Nullable Event event, boolean debug) {
-            return "case " + value.toString(event, debug);
+        public @NotNull String toString(Event event, boolean debug) {
+            if (isDefault) return "default case";
+            if (expression == null) return "case none";
+            return "case " + expression.toString(event, debug);
         }
+
     }
+
 }
