@@ -1,9 +1,7 @@
 package me.eren.skcheese;
 
-import ch.njol.skript.Skript;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 
 public final class SkCheese extends JavaPlugin {
@@ -12,9 +10,20 @@ public final class SkCheese extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Started SkCheese " + getDescription().getVersion());
         new Metrics(this, 19846);
+        this.saveDefaultConfig();
+        for (String key : this.getConfig().getConfigurationSection("syntaxes").getKeys(false)) {
+            if (this.getConfig().getBoolean("syntaxes." + key)) {
+                registerClass(key);
+            }
+        }
+    }
+
+    private void registerClass(String className) {
         try {
-            Skript.registerAddon(this).loadClasses("me.eren.skcheese", "elements");
-        } catch (IOException exception) {
+            Class<?> c = Class.forName("me.eren.skcheese.elements." + className);
+            c.getConstructor().newInstance();
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException exception) {
             getLogger().log(Level.SEVERE, "Failed to load the addon classes", exception);
         }
     }

@@ -1,0 +1,5 @@
+syntaxes:
+  CondImprovements: true
+  ExprParsedAs: true
+  ExprRevertedBoolean: true
+  SecRunFunction: true
