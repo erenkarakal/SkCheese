@@ -21,7 +21,7 @@ public class CondImprovements extends Condition {
         Skript.registerCondition(
                 CondImprovements.class,
                 "\\!<.+>",
-                        "%booleans%\\?"
+                "%booleans%\\?"
         );
     }
 
