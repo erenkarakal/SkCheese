@@ -2,6 +2,7 @@ package me.eren.skcheese.elements;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
@@ -14,6 +15,11 @@ import org.bukkit.event.Event;
 @Name("Reverted Boolean")
 @Description("Returns the opposite of a boolean.")
 @Since("1.1")
+@Examples("""
+        set {ability::%player%} to !{ability::%player%}
+        send "Toggled your ability!" to player
+        """)
+
 public class ExprRevertedBoolean extends SimpleExpression<Boolean> {
 
     static {

@@ -2,6 +2,7 @@ package me.eren.skcheese.elements;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Condition;
@@ -15,6 +16,14 @@ import java.util.Arrays;
 @Name("Reverted Condition / All True?")
 @Description("Reverts a condition or checks if a boolean or a list of booleans are all true.")
 @Since("1.1")
+@Examples("""
+        if !1 = 2:
+          broadcast "1 is indeed not 2"
+        
+        if {_booleans::*}?:
+          broadcast "all booleans in the list are true"
+        """)
+
 public class CondImprovements extends Condition {
 
     static {
@@ -51,6 +60,7 @@ public class CondImprovements extends Condition {
             case 0: // revert condition
                 return !(condition.check(e));
             case 1: // all true?
+                if (booleanExpression.getAll(e).length == 0) return false; // apparently nothing is true
                 return Arrays.stream(booleanExpression.getAll(e)).allMatch(value -> value);
         }
         return false;
@@ -58,6 +68,12 @@ public class CondImprovements extends Condition {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "reversed condition";
+        switch (pattern) {
+            case 0:
+                return "reverted condition";
+            case 1:
+                return "reverted boolean";
+        }
+        return "improved conditions";
     }
 }

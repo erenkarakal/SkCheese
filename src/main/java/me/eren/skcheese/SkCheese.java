@@ -12,7 +12,7 @@ public final class SkCheese extends JavaPlugin {
         new Metrics(this, 19846);
         this.saveDefaultConfig();
         for (String key : this.getConfig().getConfigurationSection("syntaxes").getKeys(false)) {
-            if (this.getConfig().getBoolean("syntaxes." + key)) {
+            if (this.getConfig().getBoolean("syntaxes." + key, true)) {
                 registerClass(key);
             }
         }
@@ -24,7 +24,7 @@ public final class SkCheese extends JavaPlugin {
             c.getConstructor().newInstance();
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException exception) {
-            getLogger().log(Level.SEVERE, "Failed to load the addon classes", exception);
+            getLogger().log(Level.SEVERE, "Failed to load the addon class " + className, exception);
         }
     }
 }

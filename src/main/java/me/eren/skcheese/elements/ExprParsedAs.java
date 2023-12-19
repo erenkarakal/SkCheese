@@ -3,6 +3,7 @@ package me.eren.skcheese.elements;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
@@ -17,6 +18,15 @@ import org.bukkit.event.Event;
 @Name("Parsed As Type")
 @Description("Parse a string as a type. The type can be a non-literal unlike vanilla Skript.")
 @Since("1.1")
+@Examples("""
+        set {_c} to class info of {variable}
+        set {_new.value} to {_input} parsed as type {_c}
+        if last parse error is set:
+          send "Please make sure the input is the same type as the old value." to player
+          stop
+        set {variable} to {_new.value}
+        """)
+
 public class ExprParsedAs extends SimpleExpression<Object> {
 
     static {
