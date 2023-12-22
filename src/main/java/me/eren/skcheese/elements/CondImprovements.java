@@ -60,8 +60,9 @@ public class CondImprovements extends Condition {
             case 0: // revert condition
                 return !(condition.check(e));
             case 1: // all true?
-                if (booleanExpression.getAll(e).length == 0) return false; // apparently nothing is true
-                return Arrays.stream(booleanExpression.getAll(e)).allMatch(value -> value);
+                Boolean[] values = booleanExpression.getAll(e);
+                if (values.length == 0) return false; // apparently nothing is true
+                return Arrays.stream(values).allMatch(value -> value != null && value);
         }
         return false;
     }
