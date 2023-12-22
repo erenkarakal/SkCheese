@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
@@ -22,6 +23,15 @@ import java.util.*;
 @Name("Run Function")
 @Description("Executes a function using a section. Pass parameters by doing 'parameter name: value'")
 @Since("1.0")
+@Examples("""
+        function add(1: int, 2: int) :: number:
+          return {_1} + {_2}
+        
+        execute function add and store it in {_result}:
+          1: 5   # (the order of the parameters don't matter)
+          2: 10
+        broadcast {_result} # 15
+        """)
 
 public class SecRunFunction extends Section {
 

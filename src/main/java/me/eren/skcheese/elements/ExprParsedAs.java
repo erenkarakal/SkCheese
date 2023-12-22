@@ -21,7 +21,7 @@ import org.bukkit.event.Event;
 @Examples("""
         set {_c} to class info of {variable}
         set {_new.value} to {_input} parsed as type {_c}
-        if last parse error is set:
+        if {_new.value} isn't set:
           send "Please make sure the input is the same type as the old value." to player
           stop
         set {variable} to {_new.value}
