@@ -3,3 +3,4 @@ syntaxes:
   ExprParsedAs: true
   ExprRevertedBoolean: true
   SecRunFunction: true
+  ExprTree: true
