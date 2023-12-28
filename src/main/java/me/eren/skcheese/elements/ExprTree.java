@@ -21,7 +21,7 @@ import java.util.*;
                 
         loop tree of {_var::*}:
           send loop-branch       # 1, 2, 1::3
-          send {_var::%branch%}  # "a", "b", "c"
+          send {_var::%loop-branch%}  # "a", "b", "c"
         """)
 
 public class ExprTree extends SimpleExpression<String> {
