@@ -23,7 +23,8 @@ import java.util.*;
 @Name("Switch Case")
 @Description("The switch case executes one statement from multiple ones. " +
         "Thus, it is like an if-else-if ladder statement. " +
-        "The switch statement is used to test the equality of a variable against several values specified in the test cases.")
+        "The switch statement is used to test the equality of a variable against several values specified in the test cases. " +
+        "WARNING: This feature is disabled by default. Enable it inside the config.")
 @Since("1.0")
 
 public class SecSwitch extends Section {
