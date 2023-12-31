@@ -3,32 +3,35 @@ package me.eren.skcheese;
 import ch.njol.skript.Skript;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
+import java.io.IOException;
 
 public final class SkCheese extends JavaPlugin {
 
+    public static SkCheese instance;
+
     @Override
     public void onEnable() {
+        instance = this;
         getLogger().info("Started SkCheese " + getDescription().getVersion());
         new Metrics(this, 19846);
-        this.saveDefaultConfig();
 
-        Skript.registerAddon(this);
-        for (String key : this.getConfig().getConfigurationSection("syntaxes").getKeys(false)) {
-            if (this.getConfig().getBoolean("syntaxes." + key, true)) {
-                registerClass(key);
-            }
+        try {
+            Skript.registerAddon(this).loadClasses("me.eren.skcheese", "elements");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load the addon.", e);
         }
+        saveConfig();
     }
 
-    private void registerClass(String className) {
-        try {
-            Class<?> c = Class.forName("me.eren.skcheese.elements." + className);
-            c.getConstructor().newInstance();
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException exception) {
-            getLogger().log(Level.SEVERE, "Failed to load the addon class " + className, exception);
+    public static boolean isSyntaxEnabled(String syntax) {
+        return isSyntaxEnabled(syntax, true);
+    }
+
+    public static boolean isSyntaxEnabled(String syntax, boolean defaultValue) {
+        if (!instance.getConfig().isSet("syntaxes." + syntax)) {
+            instance.getConfig().set("syntaxes." + syntax, defaultValue);
+            return true;
         }
+        return instance.getConfig().getBoolean("syntaxes." + syntax);
     }
 }

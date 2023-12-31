@@ -4,9 +4,11 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
 import java.util.*;
@@ -14,6 +16,7 @@ import java.util.*;
 @Name("Tree of List Variable")
 @Description("Returns all indices of a list variable. In vanilla Skript, if you set \"{_var::a::b}\" and loop {_var::*} " +
         "nothing would be looped but this expression recursively gets all indices.")
+@Since("1.1")
 @Examples("""
         set {_var::1} to "a"
         set {_var::1::3} to "c"
@@ -21,13 +24,14 @@ import java.util.*;
                 
         loop tree of {_var::*}:
           send loop-branch       # 1, 2, 1::3
-          send {_var::%branch%}  # "a", "b", "c"
+          send {_var::%loop-branch%}  # "a", "b", "c"
         """)
 
 public class ExprTree extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprTree.class, String.class, ExpressionType.COMBINED, "tree of %~objects%");
+        if (SkCheese.isSyntaxEnabled("variable-tree"))
+            Skript.registerExpression(ExprTree.class, String.class, ExpressionType.COMBINED, "tree of %~objects%");
     }
 
     private Variable<?> variable;

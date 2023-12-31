@@ -10,6 +10,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
 @Name("Reverted Boolean")
@@ -23,7 +24,8 @@ import org.bukkit.event.Event;
 public class ExprRevertedBoolean extends SimpleExpression<Boolean> {
 
     static {
-        Skript.registerExpression(ExprRevertedBoolean.class, Boolean.class, ExpressionType.COMBINED, "!%boolean%");
+        if (SkCheese.isSyntaxEnabled("reverted-booleans"))
+            Skript.registerExpression(ExprRevertedBoolean.class, Boolean.class, ExpressionType.COMBINED, "!%boolean%");
     }
 
     Expression<Boolean> booleanExpression;

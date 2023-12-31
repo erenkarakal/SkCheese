@@ -12,6 +12,7 @@ import ch.njol.skript.lang.function.Function;
 import ch.njol.skript.lang.function.Functions;
 import ch.njol.skript.lang.function.Parameter;
 import ch.njol.util.Kleenean;
+import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.skriptlang.skript.lang.entry.EntryContainer;
@@ -36,7 +37,8 @@ import java.util.*;
 public class SecRunFunction extends Section {
 
     static {
-        Skript.registerSection(SecRunFunction.class, "(execute|run) function <.+> [and store it in %-~objects%]");
+        if (SkCheese.isSyntaxEnabled("run-function-section"))
+            Skript.registerSection(SecRunFunction.class, "(execute|run) function <.+> [and store it in %-~objects%]");
     }
 
     private Function<?> function;

@@ -13,6 +13,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.util.Kleenean;
+import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
 @Name("Parsed As Type")
@@ -30,7 +31,8 @@ import org.bukkit.event.Event;
 public class ExprParsedAs extends SimpleExpression<Object> {
 
     static {
-        Skript.registerExpression(
+        if (SkCheese.isSyntaxEnabled("dynamic-parsing"))
+            Skript.registerExpression(
                 ExprParsedAs.class, Object.class, ExpressionType.COMBINED,
                 "%string% parsed as type %~classinfo%"
         );

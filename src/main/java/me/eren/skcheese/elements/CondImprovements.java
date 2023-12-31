@@ -9,6 +9,7 @@ import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
 import java.util.Arrays;
@@ -27,11 +28,12 @@ import java.util.Arrays;
 public class CondImprovements extends Condition {
 
     static {
-        Skript.registerCondition(
+        if (SkCheese.isSyntaxEnabled("condition-improvements"))
+            Skript.registerCondition(
                 CondImprovements.class,
                 "\\!<.+>",
                 "%booleans%\\?"
-        );
+            );
     }
 
     Condition condition;
