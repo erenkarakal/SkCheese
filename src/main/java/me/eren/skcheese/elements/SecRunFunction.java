@@ -62,7 +62,7 @@ public class SecRunFunction extends Section {
                 return false;
             }
             if (!Changer.ChangerUtils.acceptsChange(storeExpression, Changer.ChangeMode.SET, function.getReturnType().getC())) {
-                Skript.error(storeExpression.toString() + "can not store objects of type " + function.getReturnType().getCodeName());
+                Skript.error(storeExpression.toString() + " can not store objects of type " + function.getReturnType().getCodeName());
                 return false;
             }
         }
