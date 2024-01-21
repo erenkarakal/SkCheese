@@ -23,18 +23,17 @@ import org.bukkit.event.Event;
           broadcast "all booleans in the list are true"
         """)
 
-public class CondRevertedCondition extends Condition {
+public class CondIfNot extends Condition {
 
     static {
         if (SkCheese.isSyntaxEnabled("reverted-conditions"))
             Skript.registerCondition(
-                CondRevertedCondition.class,
+                CondIfNot.class,
                 "\\!<.+>"
             );
     }
 
     Condition condition;
-    Expression<Boolean> booleanExpression;
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
