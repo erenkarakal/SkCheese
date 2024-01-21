@@ -4,22 +4,34 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.Node;
 import ch.njol.skript.config.SectionNode;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
+import ch.njol.skript.localization.Language;
 import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Name("String Builder - New String Builder")
+@Description("Creates a new string that is joined by a new line by default.")
+@Since("1.2")
+@Examples("""
+        new string stored in {_string}:
+          "line 1"
+          "line 2"
+        send {_string}
+        """)
 public class SecNewString extends Section {
 
     static {
-        if (SkCheese.isSyntaxEnabled("multi-line-strings")) {
+        if (SkCheese.isSyntaxEnabled("multi-line-strings"))
             Skript.registerSection(SecNewString.class, "new string [stored in %-~object%]");
-            Skript.registerExpression(ExprLastString.class, String.class, ExpressionType.SIMPLE, "last string");
-        }
     }
 
     public static String lastString;

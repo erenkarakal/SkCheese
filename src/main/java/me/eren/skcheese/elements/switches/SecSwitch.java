@@ -3,6 +3,7 @@ package me.eren.skcheese.elements.switches;
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
@@ -21,21 +22,24 @@ import java.util.*;
 @Name("Switch Case")
 @Description("The switch case executes one statement from multiple ones. " +
         "Thus, it is like an if-else-if ladder statement. " +
-        "The switch statement is used to test the equality of a variable against several values specified in the test cases. " +
+        "The switch statement is used to test the equality of a variable against several values specified in the tests cases. " +
         "WARNING: This feature is disabled by default. Enable it inside the config.")
 @Since("1.0")
+@Examples("""
+        switch {_var}:
+          case 1:
+            broadcast "1"
+          case 2:
+            broadcast "2"
+          default:
+            broadcast "neither"
+        """)
 
 public class SecSwitch extends Section {
 
     static {
-        if (SkCheese.isSyntaxEnabled("switch-cases", false)) {
+        if (SkCheese.isSyntaxEnabled("switch-cases", false))
             Skript.registerSection(SecSwitch.class, "switch %~object%");
-            Skript.registerSection(SecSwitchCase.class,
-                    "case %objects%",
-                    "case (none|not set)",
-                    "default"
-            );
-        }
     }
 
     private final List<SecSwitchCase> cases = new LinkedList<>();

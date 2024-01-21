@@ -1,5 +1,6 @@
 package me.eren.skcheese.elements.labels;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -9,12 +10,13 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.Kleenean;
+import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 import org.skriptlang.skript.lang.structure.Structure;
 
 import java.io.File;
 
-@Name("Goto")
+@Name("Labels - Goto")
 @Description("Jumps to a label.")
 @Since("1.1")
 @Examples("""
@@ -25,6 +27,11 @@ import java.io.File;
           broadcast "hi"
         """)
 public class EffGoto extends Effect {
+
+    static {
+        if (SkCheese.isSyntaxEnabled("labels"))
+            Skript.registerEffect(EffGoto.class, "(go|jump)[ ]to %string%");
+    }
 
     private Expression<String> labelExpr;
     private File scriptFile;

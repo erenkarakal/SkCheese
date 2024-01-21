@@ -6,6 +6,7 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.util.LiteralUtils;
 import ch.njol.util.Kleenean;
+import me.eren.skcheese.SkCheese;
 import me.eren.skcheese.utils.SkriptUtil;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SecSwitchCase extends Section {
+
+    static {
+        if (SkCheese.isSyntaxEnabled("switch-cases", false))
+            Skript.registerSection(SecSwitchCase.class,
+                    "case %objects%",
+                    "case (none|not set)",
+                    "default"
+            );
+    }
 
     private Trigger trigger;
     private @Nullable Expression<?> expression;

@@ -5,16 +5,17 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.*;
+import ch.njol.skript.lang.Effect;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.skriptlang.skript.lang.structure.Structure;
 
 import java.io.File;
 
-@Name("Label")
+@Name("Labels - New Label")
 @Description("Creates a label that you can jump to later on.")
 @Since("1.1")
 @Examples("""
@@ -28,11 +29,8 @@ import java.io.File;
 public class EffLabel extends Effect {
 
     static {
-        if (SkCheese.isSyntaxEnabled("labels")) {
+        if (SkCheese.isSyntaxEnabled("labels"))
             Skript.registerEffect(EffLabel.class, "label <.+>");
-            Skript.registerEffect(EffGoto.class, "(go|jump)[ ]to %string%");
-            Bukkit.getPluginManager().registerEvents(new ScriptLoadListener(), SkCheese.instance);
-        }
     }
 
     private String labelName;
