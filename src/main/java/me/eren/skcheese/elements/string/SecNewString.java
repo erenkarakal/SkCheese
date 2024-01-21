@@ -61,8 +61,10 @@ public class SecNewString extends Section {
     protected TriggerItem walk(Event e) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < expressions.size(); i++) {
-            String string = expressions.get(i).getSingle(e);
-            stringBuilder.append(string);
+            Expression<String> stringExpression = expressions.get(i);
+            if (stringExpression != null) {
+                stringBuilder.append(stringExpression.getSingle(e));
+            }
             if (i < expressions.size() - 1) {
                 stringBuilder.append("\n");
             }
