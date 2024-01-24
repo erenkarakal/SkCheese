@@ -9,14 +9,12 @@ import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
-import ch.njol.skript.localization.Language;
 import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Name("String Builder - New String Builder")
 @Description("Creates a new string that is joined by a new line by default.")

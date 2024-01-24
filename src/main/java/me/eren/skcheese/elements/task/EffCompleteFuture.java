@@ -19,6 +19,7 @@ import org.bukkit.event.Event;
 @Examples("""
         complete future {_future} with {_value}
         """)
+
 public class EffCompleteFuture extends Effect {
 
     static {
@@ -41,7 +42,7 @@ public class EffCompleteFuture extends Effect {
         Future future = futureExpr.getSingle(e);
         Object value = completeExpr.getSingle(e);
         if (future == null) return;
-        future.completableFuture.complete(value);
+        future.completableFuture().complete(value);
     }
 
     @Override

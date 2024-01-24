@@ -12,15 +12,12 @@ import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
-@Name("Reverted Condition / All True?")
-@Description("Reverts a condition or checks if a boolean or a list of booleans are all true.")
+@Name("If Not")
+@Description("Checks if a condition doesn't pass.")
 @Since("1.1")
 @Examples("""
         if !1 = 2:
           broadcast "1 is indeed not 2"
-        
-        if {_booleans::*}?:
-          broadcast "all booleans in the list are true"
         """)
 
 public class CondIfNot extends Condition {

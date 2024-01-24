@@ -24,7 +24,7 @@ public class FutureType {
 
                     @Override
                     public String toString(Future future, int flags) {
-                        return "future:" + future.timeout;
+                        return "future:" + future.timeout();
                     }
 
                     @Override
@@ -35,7 +35,7 @@ public class FutureType {
                     @Override
                     public Fields serialize(Future future) {
                         Fields fields = new Fields();
-                        fields.putObject("timeout", future.timeout);
+                        fields.putObject("timeout", future.timeout());
                         return fields;
                     }
 

@@ -14,10 +14,10 @@ import ch.njol.skript.util.Timespan;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Name("Futures - Wait for Future")
@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Examples("""
         wait for {_future} and store the result in {_result}
         """)
+
 public class EffWaitForFuture extends Effect {
 
     static {
@@ -53,16 +54,25 @@ public class EffWaitForFuture extends Effect {
         if (next == null || future == null) return null;
         Object localVars = Variables.removeLocals(e);
 
-        CompletableFuture<?> completableFuture = future.completableFuture;
-        completableFuture.completeOnTimeout(null, future.timeout, TimeUnit.MILLISECONDS); // I don't want TimeoutException
+        boolean isPrimaryThread = Bukkit.isPrimaryThread();
+        CompletableFuture<?> completableFuture = future.completableFuture();
+        completableFuture.completeOnTimeout(null, future.timeout(), TimeUnit.MILLISECONDS); // I don't want TimeoutException
 
         completableFuture.thenAcceptAsync(returnValue -> {
             if (localVars != null)
                 Variables.setLocalVariables(e, localVars);
 
             storeExpr.change(e, new Object[]{ returnValue }, Changer.ChangeMode.SET);
-            TriggerItem.walk(next, e);
-            Variables.removeLocals(e);
+
+            if (isPrimaryThread) {
+                Bukkit.getScheduler().runTask(SkCheese.instance, () -> {
+                    TriggerItem.walk(next, e);
+                    Variables.removeLocals(e);
+                });
+            } else {
+                TriggerItem.walk(next, e);
+                Variables.removeLocals(e);
+            }
         }).exceptionally(ex -> null);
 
         return null;

@@ -1,7 +1,6 @@
 package me.eren.skcheese.elements.task;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -10,7 +9,6 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
-import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
@@ -22,6 +20,7 @@ import org.bukkit.event.Event;
 @Examples("""
         set {_future} to new future with 5 second timeout
         """)
+
 public class ExprNewFuture extends SimpleExpression<Future> {
 
     static {

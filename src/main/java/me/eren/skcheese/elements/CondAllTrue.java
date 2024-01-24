@@ -1,6 +1,10 @@
 package me.eren.skcheese.elements;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -9,6 +13,14 @@ import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
 import java.util.Arrays;
+
+@Name("All True?")
+@Description("Checks if a list of booleans are all true.")
+@Since("1.1")
+@Examples("""
+        if {_booleans::*}?:
+          broadcast "all booleans in the list are true
+        """)
 
 public class CondAllTrue extends Condition {
 
