@@ -29,17 +29,19 @@ public class SecNewString extends Section {
 
     static {
         if (SkCheese.isSyntaxEnabled("multi-line-strings"))
-            Skript.registerSection(SecNewString.class, "new string [stored in %-~object%]");
+            Skript.registerSection(SecNewString.class, "new string [joined with %-string%] [stored in %-~object%]");
     }
 
     public static String lastString;
+    private Expression<String> joinExpression;
     private Expression<?> storeExpression;
     private final List<Expression<String>> expressions = new ArrayList<>();
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult, SectionNode sectionNode, List<TriggerItem> triggerItems) {
-        if (exprs[0] != null) {
-            storeExpression = exprs[0];
+        joinExpression = (Expression<String>) exprs[0];
+        if (exprs[1] != null) {
+            storeExpression = exprs[1];
             if (!Changer.ChangerUtils.acceptsChange(storeExpression, Changer.ChangeMode.SET, String.class)) {
                 Skript.error("A string can not be stored in " + storeExpression);
                 return false;
@@ -57,6 +59,9 @@ public class SecNewString extends Section {
 
     @Override
     protected TriggerItem walk(Event e) {
+        String joinText = (joinExpression != null) ? joinExpression.getSingle(e) : null;
+        joinText = (joinText != null) ? joinText : "\n";
+
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < expressions.size(); i++) {
             Expression<String> stringExpression = expressions.get(i);
@@ -64,7 +69,7 @@ public class SecNewString extends Section {
                 stringBuilder.append(stringExpression.getSingle(e));
             }
             if (i < expressions.size() - 1) {
-                stringBuilder.append("\n");
+                stringBuilder.append(joinText);
             }
         }
 
