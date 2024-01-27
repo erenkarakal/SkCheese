@@ -14,7 +14,7 @@ import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
-@Name("Futures - New Feature")
+@Name("Futures - New Future")
 @Description("Creates a new future that can be waited for.")
 @Since("1.2")
 @Examples("""
