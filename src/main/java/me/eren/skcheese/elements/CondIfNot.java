@@ -16,7 +16,7 @@ import org.bukkit.event.Event;
 @Description("Checks if a condition doesn't pass.")
 @Since("1.1")
 @Examples("""
-        if !1 = 2:
+        if !(1 = 2):
           broadcast "1 is indeed not 2"
         """)
 
@@ -26,7 +26,7 @@ public class CondIfNot extends Condition {
         if (SkCheese.isSyntaxEnabled("reverted-conditions"))
             Skript.registerCondition(
                 CondIfNot.class,
-                "\\!<.+>"
+                "\\!\\(<.+>\\)"
             );
     }
 
