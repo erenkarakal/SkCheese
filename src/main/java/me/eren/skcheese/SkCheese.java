@@ -30,7 +30,7 @@ public final class SkCheese extends JavaPlugin {
     public static boolean isSyntaxEnabled(String syntax, boolean defaultValue) {
         if (!instance.getConfig().isSet("syntaxes." + syntax)) {
             instance.getConfig().set("syntaxes." + syntax, defaultValue);
-            return true;
+            return defaultValue;
         }
         return instance.getConfig().getBoolean("syntaxes." + syntax);
     }
