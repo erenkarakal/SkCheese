@@ -51,6 +51,7 @@ public class ExprTree extends SimpleExpression<String> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected String[] get(Event e) {
         return getAllKeys((TreeMap<Object, Object>) variable.getRaw(e));
     }
@@ -80,6 +81,7 @@ public class ExprTree extends SimpleExpression<String> {
         return keysList.toArray(new String[0]);
     }
 
+    @SuppressWarnings("unchecked")
     public ArrayList<String> getAllKeysHelper(TreeMap<Object, Object> map, String prefix) {
         ArrayList<String> keys = new ArrayList<>();
 
