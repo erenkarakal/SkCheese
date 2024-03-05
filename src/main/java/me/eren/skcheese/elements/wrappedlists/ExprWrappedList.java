@@ -47,12 +47,16 @@ public class ExprWrappedList extends SimpleExpression<WrappedList> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected WrappedList[] get(Event e) {
         // already checked if it's a list in init(), has to be a map now
         TreeMap<String, Object> map = (TreeMap<String, Object>) variable.getRaw(e);
         // if we are wrapping {_hippo::*}, we don't want to copy {_hippo}
-        if (map != null) map.remove(null);
-        return new WrappedList[]{ new WrappedList(map) };
+        if (map != null) {
+            map.remove(null);
+            return new WrappedList[]{ new WrappedList(map) };
+        }
+        return new WrappedList[]{};
     }
 
     @Override
