@@ -20,7 +20,7 @@ import java.util.List;
 public class SecSwitchCase extends Section {
 
     static {
-        if (SkCheese.isSyntaxEnabled("switch-cases", false))
+        if (SkCheese.isSyntaxEnabled("switch-cases"))
             Skript.registerSection(SecSwitchCase.class,
                     "case %objects%",
                     "case (none|not set)",

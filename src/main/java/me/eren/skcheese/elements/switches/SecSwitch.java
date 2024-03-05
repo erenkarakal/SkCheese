@@ -22,8 +22,7 @@ import java.util.*;
 @Name("Switch Case")
 @Description("The switch case executes one statement from multiple ones. " +
         "Thus, it is like an if-else-if ladder statement. " +
-        "The switch statement is used to test the equality of a variable against several values specified in the tests cases. " +
-        "WARNING: This feature is disabled by default. Enable it inside the config.")
+        "The switch statement is used to test the equality of a variable against several values specified in the tests cases.")
 @Since("1.0")
 @Examples("""
         switch {_var}:
@@ -38,7 +37,7 @@ import java.util.*;
 public class SecSwitch extends Section {
 
     static {
-        if (SkCheese.isSyntaxEnabled("switch-cases", false))
+        if (SkCheese.isSyntaxEnabled("switch-cases"))
             Skript.registerSection(SecSwitch.class, "switch %~object%");
     }
 
