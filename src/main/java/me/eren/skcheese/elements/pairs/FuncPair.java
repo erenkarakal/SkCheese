@@ -1,5 +1,9 @@
 package me.eren.skcheese.elements.pairs;
 
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.function.FunctionEvent;
 import ch.njol.skript.lang.function.Functions;
 import ch.njol.skript.lang.function.JavaFunction;
@@ -9,6 +13,12 @@ import ch.njol.skript.registrations.DefaultClasses;
 import ch.njol.util.Pair;
 import me.eren.skcheese.SkCheese;
 
+@Name("Pairs - New Pair")
+@Description("Creates a new pair.")
+@Since("1.4")
+@Examples("""
+        send first value of {_pair}
+        """)
 public class FuncPair {
     static {
         if (SkCheese.isSyntaxEnabled("pairs")) {

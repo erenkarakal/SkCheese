@@ -1,6 +1,10 @@
 package me.eren.skcheese.elements.pairs;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
@@ -10,6 +14,12 @@ import ch.njol.util.Pair;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 
+@Name("Pairs - Value of Pair")
+@Description("Gets the first/second value of a pair.")
+@Since("1.4")
+@Examples("""
+        set {_pair} to pair(1, "hello")
+        """)
 public class ExprPairValue extends SimpleExpression<Object> {
 
     static {
