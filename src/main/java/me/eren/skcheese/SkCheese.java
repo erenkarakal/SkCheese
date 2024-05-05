@@ -19,7 +19,8 @@ public final class SkCheese extends JavaPlugin {
     public void onEnable() {
         instance = this;
         getLogger().info("Started SkCheese " + getDescription().getVersion());
-        new Metrics(this, 19846);
+        Metrics metrics = new Metrics(this, 19846);
+        metrics.addCustomChart(new Metrics.SimplePie("skript_version", () -> Skript.getVersion().toString()));
 
         String currentVersion = getDescription().getVersion();
         String latestVersion = getLatestVersion();
