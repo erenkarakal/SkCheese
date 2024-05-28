@@ -6,7 +6,7 @@
 
     <groupId>me.eren</groupId>
     <artifactId>SkCheese</artifactId>
-    <version>1.4</version>
+    <version>1.4.1</version>
     <packaging>jar</packaging>
 
     <name>SkCheese</name>
