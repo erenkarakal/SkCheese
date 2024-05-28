@@ -1,5 +1,6 @@
 package me.eren.skcheese.elements.string;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.Node;
@@ -9,6 +10,7 @@ import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
+import ch.njol.skript.localization.Language;
 import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
@@ -37,6 +39,7 @@ public class SecNewString extends Section {
     private Expression<?> storeExpression;
     private final List<Expression<String>> expressions = new ArrayList<>();
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult, SectionNode sectionNode, List<TriggerItem> triggerItems) {
         joinExpression = (Expression<String>) exprs[0];
@@ -50,6 +53,7 @@ public class SecNewString extends Section {
         for (Node node : sectionNode) {
             String line = node.getKey();
             if (line != null) {
+                line = ScriptLoader.replaceOptions(line);
                 SkriptParser parser = new SkriptParser(line, SkriptParser.ALL_FLAGS, ParseContext.DEFAULT);
                 expressions.add((Expression<String>) parser.parseExpression(String.class));
             }
@@ -66,7 +70,8 @@ public class SecNewString extends Section {
         for (int i = 0; i < expressions.size(); i++) {
             Expression<String> stringExpression = expressions.get(i);
             if (stringExpression != null) {
-                stringBuilder.append(stringExpression.getSingle(e));
+                String string = stringExpression.getSingle(e);
+                stringBuilder.append(string != null ? string : Language.get("none"));
             }
             if (i < expressions.size() - 1) {
                 stringBuilder.append(joinText);
