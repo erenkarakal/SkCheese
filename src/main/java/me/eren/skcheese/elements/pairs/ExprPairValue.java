@@ -56,7 +56,6 @@ public class ExprPairValue extends SimpleExpression<Object> {
         return Pair.class;
     }
 
-
     @Override
     public String toString(Event e, boolean debug) {
         return (isFirst ? "first" : "second") + "value of " + pairExpr;

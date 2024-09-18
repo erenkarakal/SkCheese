@@ -38,20 +38,20 @@ public class ExprParsedAs extends SimpleExpression<Object> {
         );
     }
 
-    private Expression<ClassInfo<?>> classInfoExpr;
-    private Expression<String> toParseExpr;
+    private Expression<ClassInfo<?>> classInfoExpression;
+    private Expression<String> toParseExpression;
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        classInfoExpr = (Expression<ClassInfo<?>>) exprs[1];
-        toParseExpr = (Expression<String>) exprs[0];
+        classInfoExpression = (Expression<ClassInfo<?>>) exprs[1];
+        toParseExpression = (Expression<String>) exprs[0];
         return true;
     }
 
     @Override
     protected Object[] get(Event e) {
-        ClassInfo<?> classInfo = classInfoExpr.getSingle(e);
-        String toParse = toParseExpr.getSingle(e);
+        ClassInfo<?> classInfo = classInfoExpression.getSingle(e);
+        String toParse = toParseExpression.getSingle(e);
         if (classInfo == null || toParse == null) return null;
         if (classInfo.getC() == String.class) return new Object[]{ toParse }; // because parsing as string returns null
 
@@ -71,6 +71,6 @@ public class ExprParsedAs extends SimpleExpression<Object> {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return toParseExpr + " parsed as type " + classInfoExpr;
+        return toParseExpression + " parsed as type " + classInfoExpression;
     }
 }

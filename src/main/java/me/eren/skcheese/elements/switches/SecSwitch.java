@@ -106,7 +106,7 @@ public class SecSwitch extends Section {
 
         if (found == null) found = defaultCase;
 
-        found.trigger().execute(event);
+        TriggerItem.walk(found.trigger(), event);
 
         return getNext();
     }
