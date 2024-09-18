@@ -3,7 +3,7 @@
 ---
 
 # SkCheese
-SkCheese is a [Skript](https://github.com/SkriptLang/Skript/) addon . This adds the feature's to skript which cannot add to Skript plugin officially .
+SkCheese is a [Skript](https://github.com/SkriptLang/Skript/) addon . This adds the feature's to skript which cannot add to Skript plugin officially , because SkBee  is deleted now so SkCheese has become a good replacement
 
 # Feature's We Offer
 There is a listing for feature's that is added by SkCheese addon you can find below with respected [wiki pages](https://github.com/erenkarakal/SkCheese/wiki) :-
