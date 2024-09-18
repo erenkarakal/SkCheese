@@ -2,6 +2,10 @@ package me.eren.skcheese.elements;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.command.EffectCommandEvent;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -12,6 +16,11 @@ import me.eren.skcheese.SkCheese;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
+
+@Name("Evaluate")
+@Description("Runs Skript code from a string as if you used effect commands. This shouldn't be used in production.")
+@Since("1.5")
+@Examples("eval \"broadcast 2+2\"")
 
 public class EffEval extends Effect {
 

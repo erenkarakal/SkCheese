@@ -21,7 +21,7 @@ import java.util.*;
         set {_var::1} to "a"
         set {_var::1::3} to "c"
         set {_var::2} to "b"
-                
+        
         loop tree of {_var::*}:
           send loop-branch       # 1, 2, 1::3
           send {_var::%loop-branch%}  # "a", "b", "c"

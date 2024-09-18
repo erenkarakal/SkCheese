@@ -2,6 +2,10 @@ package me.eren.skcheese.elements.bits;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
@@ -11,6 +15,11 @@ import ch.njol.util.coll.CollectionUtils;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+
+@Name("Bits - Bit of Number")
+@Description("Gets the bit at index in a number.")
+@Since("1.5")
+@Examples("set {_first} to bit 1 of 150")
 
 public class ExprBit extends SimpleExpression<Number> {
 

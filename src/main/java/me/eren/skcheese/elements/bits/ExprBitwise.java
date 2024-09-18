@@ -1,6 +1,10 @@
 package me.eren.skcheese.elements.bits;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
@@ -10,6 +14,11 @@ import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
+
+@Name("Bits - Bitwise Operation")
+@Description("")
+@Since("1.5")
+@Examples("broadcast 5 & 3")
 
 public class ExprBitwise extends SimpleExpression<Number> {
 
