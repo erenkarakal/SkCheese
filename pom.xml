@@ -6,7 +6,7 @@
 
     <groupId>me.eren</groupId>
     <artifactId>SkCheese</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
     <packaging>jar</packaging>
 
     <name>SkCheese</name>
@@ -62,8 +62,8 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>skript-releases</id>
-            <name>Skript Repository</name>
+            <id>skript-repository-releases</id>
+            <name>SkriptLang</name>
             <url>https://repo.skriptlang.org/releases</url>
         </repository>
     </repositories>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>com.github.SkriptLang</groupId>
             <artifactId>Skript</artifactId>
-            <version>2.9.0</version>
+            <version>2.11.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
