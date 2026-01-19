@@ -12,6 +12,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public final class SkCheese extends JavaPlugin {
 
@@ -52,7 +56,8 @@ public final class SkCheese extends JavaPlugin {
     private String getLatestVersion() {
         try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.github.com/repos/eren/SkCheese"))
+                    .uri(URI.create("https://api.github.com/repos/erenkarakal/SkCheese/releases/latest"))
+                    .timeout(Duration.of(3, SECONDS))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
