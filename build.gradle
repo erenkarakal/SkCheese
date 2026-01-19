@@ -12,10 +12,14 @@ repositories {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
+    maven {
+        url = "https://repo.skriptlang.org/releases"
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    implementation('com.github.SkriptLang:Skript:2.14.0')
 }
 
 tasks {

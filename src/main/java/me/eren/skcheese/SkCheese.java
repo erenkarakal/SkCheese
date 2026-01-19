@@ -4,16 +4,19 @@ import ch.njol.skript.Skript;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.skriptlang.skript.addon.SkriptAddon;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public final class SkCheese extends JavaPlugin {
 
     public static SkCheese instance;
+    public static SkriptAddon addon;
 
     @Override
     public void onEnable() {
@@ -30,11 +33,7 @@ public final class SkCheese extends JavaPlugin {
             getLogger().warning("Latest: " + latestVersion);
         }
 
-        try {
-            Skript.registerAddon(this).loadClasses("me.eren.skcheese", "elements");
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load the addon.", e);
-        }
+        addon = Skript.instance().registerAddon(SkCheese.class, "SkCheese");
         saveConfig();
     }
 
@@ -51,23 +50,25 @@ public final class SkCheese extends JavaPlugin {
     }
 
     private String getLatestVersion() {
-        try {
-            URL url = new URI("https://api.github.com/repos/erenkarakal/SkCheese/releases/latest").toURL();
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setConnectTimeout(3000); // ms
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.github.com/repos/eren/SkCheese"))
+                    .build();
 
-            if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                this.getLogger().info("Got code " + con.getResponseCode() + " while checking for updates.");
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != HttpURLConnection.HTTP_OK) {
+                getLogger().info("Got code " + response.statusCode() + " while checking for updates.");
                 return getDescription().getVersion();
             }
 
-            String response = new String(con.getInputStream().readAllBytes());
             Gson gson = new Gson();
-            JsonObject json = gson.fromJson(response, JsonObject.class);
-            if (json.has("tag_name")) return json.get("tag_name").getAsString();
+            JsonObject json = gson.fromJson(response.body(), JsonObject.class);
+            if (json.has("tag_name")) {
+                return json.get("tag_name").getAsString();
+            }
 
-        } catch (URISyntaxException | IOException exception) {
+        } catch (InterruptedException | IOException exception) {
             this.getLogger().info("Unable to check for updates: " + exception.getMessage());
         }
 
