@@ -6,22 +6,25 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.Node;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.localization.Language;
 import ch.njol.util.Kleenean;
-import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.skriptlang.skript.registration.SyntaxInfo.builder;
+
 @Name("String Builder - New String Builder")
 @Description("Creates a new string that is joined by a new line by default.")
 @Since("1.2")
-@Examples("""
+@Example("""
         new string stored in {_string}:
           "line 1"
           "line 2"
@@ -29,24 +32,28 @@ import java.util.List;
         """)
 public class SecNewString extends Section {
 
-    static {
-        if (SkCheese.isSyntaxEnabled("multi-line-strings"))
-            Skript.registerSection(SecNewString.class, "new string [joined with %-string%] [stored in %-~object%]");
+    protected static void register(SyntaxRegistry registry) {
+        registry.register(SyntaxRegistry.SECTION,
+                builder(SecNewString.class)
+                        .addPattern("new string [joined with %-string%] [stored in %-~object%]")
+                        .build()
+        );
     }
 
     public static String lastString;
-    private Expression<String> joinExpression;
-    private Expression<?> storeExpression;
+    private Expression<String> join;
+    private Expression<?> store;
     private final List<Expression<String>> expressions = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult, SectionNode sectionNode, List<TriggerItem> triggerItems) {
-        joinExpression = (Expression<String>) exprs[0];
-        if (exprs[1] != null) {
-            storeExpression = exprs[1];
-            if (!Changer.ChangerUtils.acceptsChange(storeExpression, Changer.ChangeMode.SET, String.class)) {
-                Skript.error("A string can not be stored in " + storeExpression);
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed,
+                        ParseResult parseResult, SectionNode sectionNode, List<TriggerItem> triggerItems) {
+        join = (Expression<String>) expressions[0];
+        if (expressions[1] != null) {
+            store = expressions[1];
+            if (!Changer.ChangerUtils.acceptsChange(store, Changer.ChangeMode.SET, String.class)) {
+                Skript.error("A string can not be stored in " + store);
                 return false;
             }
         }
@@ -55,22 +62,22 @@ public class SecNewString extends Section {
             if (line != null) {
                 line = ScriptLoader.replaceOptions(line);
                 SkriptParser parser = new SkriptParser(line, SkriptParser.ALL_FLAGS, ParseContext.DEFAULT);
-                expressions.add((Expression<String>) parser.parseExpression(String.class));
+                this.expressions.add((Expression<String>) parser.parseExpression(String.class));
             }
         }
         return true;
     }
 
     @Override
-    protected TriggerItem walk(Event e) {
-        String joinText = (joinExpression != null) ? joinExpression.getSingle(e) : null;
+    protected TriggerItem walk(Event event) {
+        String joinText = (join != null) ? join.getSingle(event) : null;
         joinText = (joinText != null) ? joinText : "\n";
 
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < expressions.size(); i++) {
             Expression<String> stringExpression = expressions.get(i);
             if (stringExpression != null) {
-                String string = stringExpression.getSingle(e);
+                String string = stringExpression.getSingle(event);
                 stringBuilder.append(string != null ? string : Language.get("none"));
             }
             if (i < expressions.size() - 1) {
@@ -78,8 +85,8 @@ public class SecNewString extends Section {
             }
         }
 
-        if (storeExpression != null) {
-            storeExpression.change(e, new Object[]{ stringBuilder.toString() }, Changer.ChangeMode.SET);
+        if (store != null) {
+            store.change(event, new Object[]{stringBuilder.toString()}, Changer.ChangeMode.SET);
         } else {
             lastString = stringBuilder.toString();
         }
@@ -88,7 +95,8 @@ public class SecNewString extends Section {
     }
 
     @Override
-    public String toString(Event e, boolean debug) {
+    public String toString(Event event, boolean debug) {
         return "new string";
     }
+
 }

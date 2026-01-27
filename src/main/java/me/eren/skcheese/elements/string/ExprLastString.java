@@ -1,22 +1,23 @@
 package me.eren.skcheese.elements.string;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+
+import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
+
 
 @Name("String Builder - Last String")
 @Description("Represents the last string created by the string builder, if it wasn't stored anywhere.")
 @Since("1.2")
-@Examples("""
+@Example("""
         new string:
           "line 1"
           "line 2"
@@ -24,18 +25,21 @@ import org.bukkit.event.Event;
         """)
 public class ExprLastString extends SimpleExpression<String> {
 
-    static {
-        if (SkCheese.isSyntaxEnabled("multi-line-strings"))
-            Skript.registerExpression(ExprLastString.class, String.class, ExpressionType.SIMPLE, "last string");
+    protected static void register(SyntaxRegistry registry) {
+        registry.register(SyntaxRegistry.EXPRESSION,
+                builder(ExprLastString.class, String.class)
+                        .addPattern("last string")
+                        .build()
+        );
     }
 
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
         return true;
     }
 
     @Override
-    protected String[] get(Event e) {
+    protected String[] get(Event event) {
         return new String[] { SecNewString.lastString };
     }
 
@@ -50,7 +54,8 @@ public class ExprLastString extends SimpleExpression<String> {
     }
 
     @Override
-    public String toString(Event e, boolean debug) {
+    public String toString(Event event, boolean debug) {
         return "last string";
     }
+
 }

@@ -1,47 +1,58 @@
 package me.eren.skcheese.elements.bits;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.LiteralUtils;
 import ch.njol.util.Kleenean;
-import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+
+import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
 @Name("Bits - Bitwise Operation")
-@Description("")
+@Description("Performs bitwise operations on numbers and returns their value.")
 @Since("1.5")
-@Examples("broadcast 5 & 3")
-
+@Example("broadcast 5 & 3")
 public class ExprBitwise extends SimpleExpression<Number> {
 
-    private Expression<Number> firstExpression;
-    private Expression<Number> secondExpression;
+    protected static void register(SyntaxRegistry registry) {
+        registry.register(SyntaxRegistry.EXPRESSION,
+                builder(ExprBitwise.class, Number.class)
+                        .addPatterns(
+                                "%number% \\& %number%",
+                                "%number% \\| %number%",
+                                "%number% \\^\\^ %number%",
+                                "\\~%number%"
+                        ).build()
+        );
+    }
+
+    private Expression<Number> first;
+    private Expression<Number> second;
 
     private int pattern;
 
-    static {
-        if (SkCheese.isSyntaxEnabled("bit-operations"))
-            Skript.registerExpression(
-                ExprBitwise.class, Number.class, ExpressionType.COMBINED,
-                "%number% \\& %number%",
-                "%number% \\| %number%",
-                "%number% \\^\\^ %number%",
-                "\\~%number%"
-        );
+    @Override
+    public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull Kleenean isDelayed,
+                        @NotNull ParseResult parseResult) {
+        pattern = matchedPattern;
+        first = LiteralUtils.defendExpression(expressions[0]);
+        if (pattern != 3) {
+            second = LiteralUtils.defendExpression(expressions[1]);
+        }
+        return true;
     }
 
     @Override
     protected Number @NotNull [] get(@NotNull Event event) {
-        Number first = this.firstExpression.getSingle(event);
-        Number second = this.secondExpression != null ? this.secondExpression.getSingle(event) : null;
+        Number first = this.first.getSingle(event);
+        Number second = this.second != null ? this.second.getSingle(event) : null;
         if (first == null) first = 0;
         if (second == null) second = 0;
         return switch (pattern) {
@@ -64,7 +75,7 @@ public class ExprBitwise extends SimpleExpression<Number> {
     }
 
     @Override
-    public @NotNull String toString(Event event, boolean b) {
+    public @NotNull String toString(Event event, boolean debug) {
         return switch (pattern) {
             case 0 -> "bitwise AND";
             case 1 -> "bitwise inclusive OR";
@@ -72,15 +83,6 @@ public class ExprBitwise extends SimpleExpression<Number> {
             case 3 -> "Unary bitwise complement";
             default -> "bitwise operator";
         };
-    }
-
-    @Override
-    public boolean init(Expression<?> @NotNull [] expressions, int i, @NotNull Kleenean kleenean, SkriptParser.@NotNull ParseResult parseResult) {
-        pattern = i;
-        firstExpression = LiteralUtils.defendExpression(expressions[0]);
-        if(pattern != 3)
-            secondExpression = LiteralUtils.defendExpression(expressions[1]);
-        return true;
     }
 
 }

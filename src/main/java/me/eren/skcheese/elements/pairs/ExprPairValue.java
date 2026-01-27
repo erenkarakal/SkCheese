@@ -1,48 +1,53 @@
 package me.eren.skcheese.elements.pairs;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import ch.njol.util.Pair;
-import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+
+import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
 @Name("Pairs - Value of Pair")
 @Description("Gets the first/second value of a pair.")
 @Since("1.4")
-@Examples("""
-        set {_pair} to pair(1, "hello")
-        """)
+@Example("set {_pair} to pair(1, \"hello\")")
 public class ExprPairValue extends SimpleExpression<Object> {
 
-    static {
-        if (SkCheese.isSyntaxEnabled("pairs"))
-            Skript.registerExpression(ExprPairValue.class, Object.class, ExpressionType.COMBINED, "(:first|second) value of %pair%");
+    protected static void register(SyntaxRegistry registry) {
+        registry.register(SyntaxRegistry.EXPRESSION,
+                builder(ExprPairValue.class, Object.class)
+                        .addPattern("(:first|second) value of %pair%")
+                        .build()
+        );
     }
 
     private boolean isFirst;
-    private Expression<Pair<?,?>> pairExpr;
+    private Expression<Pair<?, ?>> pair;
 
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
         isFirst = parseResult.hasTag("first");
-        pairExpr = (Expression<Pair<?, ?>>) exprs[0];
+        // noinspection unchecked
+        pair = (Expression<Pair<?, ?>>) expressions[0];
         return true;
     }
 
     @Override
-    protected Object[] get(Event e) {
-        Pair<?,?> pair = pairExpr.getSingle(e);
-        if (pair == null) return null;
-        Object value = isFirst ? pair.getFirst() : pair.getSecond();
-        if (value == null) return null;
+    protected Object[] get(Event event) {
+        Pair<?, ?> pair = this.pair.getSingle(event);
+        if (pair == null) {
+            return null;
+        }
+        Object value = isFirst ? pair.first() : pair.second();
+        if (value == null) {
+            return null;
+        }
         return new Object[]{ value };
     }
 
@@ -57,7 +62,8 @@ public class ExprPairValue extends SimpleExpression<Object> {
     }
 
     @Override
-    public String toString(Event e, boolean debug) {
-        return (isFirst ? "first" : "second") + "value of " + pairExpr;
+    public String toString(Event event, boolean debug) {
+        return (isFirst ? "first" : "second") + "value of " + pair.toString(event, debug);
     }
+
 }

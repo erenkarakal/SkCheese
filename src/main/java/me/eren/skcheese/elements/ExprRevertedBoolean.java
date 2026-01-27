@@ -1,44 +1,51 @@
 package me.eren.skcheese.elements;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+
+import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
 @Name("Reverted Boolean")
 @Description("Returns the opposite of a boolean.")
 @Since("1.1")
-@Examples("""
+@Example("""
         set {ability::%player%} to !{ability::%player%}
         send "Toggled your ability!" to player
         """)
 
 public class ExprRevertedBoolean extends SimpleExpression<Boolean> {
 
-    static {
-        if (SkCheese.isSyntaxEnabled("reverted-booleans"))
-            Skript.registerExpression(ExprRevertedBoolean.class, Boolean.class, ExpressionType.COMBINED, "!%boolean%");
+    public static void register(SyntaxRegistry registry) {
+        if (SkCheese.isSyntaxEnabled("reverted-booleans")) {
+            registry.register(SyntaxRegistry.EXPRESSION,
+                    builder(ExprRevertedBoolean.class, Boolean.class)
+                            .addPattern("!%boolean%")
+                            .build()
+            );
+        }
     }
 
-    Expression<Boolean> booleanExpression;
+    Expression<Boolean> b00lean;
 
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        booleanExpression = (Expression<Boolean>) exprs[0];
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
+        // noinspection unchecked
+        b00lean = (Expression<Boolean>) expressions[0];
         return true;
     }
 
     @Override
-    protected Boolean[] get(Event e) {
-        boolean bool = Boolean.TRUE.equals(booleanExpression.getSingle(e));
+    protected Boolean[] get(Event event) {
+        boolean bool = Boolean.TRUE.equals(b00lean.getSingle(event));
         return new Boolean[]{ !bool };
     }
 
@@ -53,7 +60,8 @@ public class ExprRevertedBoolean extends SimpleExpression<Boolean> {
     }
 
     @Override
-    public String toString(Event e, boolean debug) {
-        return "reverted boolean " + booleanExpression;
+    public String toString(Event event, boolean debug) {
+        return "reverted boolean " + b00lean.toString(event, debug);
     }
+
 }

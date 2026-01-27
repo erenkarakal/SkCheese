@@ -2,43 +2,44 @@ package me.eren.skcheese.elements.wrappedlists;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.Variable;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import java.util.TreeMap;
+
+import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
 @Name("WrappedList - New Wrapped List")
 @Description("Converts a list variable to a wrapped list.")
 @Since("1.3")
-@Examples("""
-        set {_wl} to wrapped {_var::*}
-        """)
-
+@Example("set {_wl} to wrapped {_var::*}")
 public class ExprWrappedList extends SimpleExpression<WrappedList> {
 
-    static {
-        if (SkCheese.isSyntaxEnabled("wrapped-lists"))
-            Skript.registerExpression(ExprWrappedList.class, WrappedList.class, ExpressionType.COMBINED, "wrapped %-~objects%");
+    protected static void register(SyntaxRegistry registry) {
+        registry.register(SyntaxRegistry.EXPRESSION,
+                builder(ExprWrappedList.class, WrappedList.class)
+                        .addPattern("wrapped %-~objects%")
+                        .build()
+        );
     }
 
     private Variable<?> variable;
 
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        if (!(exprs[0] instanceof Variable<?>)) {
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
+        if (!(expressions[0] instanceof Variable<?>)) {
             Skript.error("The wrapped list expression can only be used with variables.");
             return false;
         }
-        variable = (Variable<?>) exprs[0];
+        variable = (Variable<?>) expressions[0];
         if (!variable.isList()) {
             Skript.error("You can only wrap a list variable.");
             return false;
@@ -47,14 +48,14 @@ public class ExprWrappedList extends SimpleExpression<WrappedList> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected WrappedList[] get(Event e) {
         // already checked if it's a list in init(), has to be a map now
+        // noinspection unchecked
         TreeMap<String, Object> map = (TreeMap<String, Object>) variable.getRaw(e);
         // if we are wrapping {_hippo::*}, we don't want to copy {_hippo}
         if (map != null) {
             map.remove(null);
-            return new WrappedList[]{ new WrappedList(map) };
+            return new WrappedList[]{new WrappedList(map)};
         }
         return new WrappedList[]{};
     }
@@ -70,8 +71,8 @@ public class ExprWrappedList extends SimpleExpression<WrappedList> {
     }
 
     @Override
-    public String toString(Event e, boolean debug) {
-        return "wrapped " + variable;
+    public String toString(Event event, boolean debug) {
+        return "wrapped " + variable.toString(event, debug);
     }
 
 }

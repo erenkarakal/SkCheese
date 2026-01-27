@@ -11,7 +11,8 @@ import me.eren.skcheese.SkCheese;
 import java.io.StreamCorruptedException;
 
 public class FutureType {
-    static {
+
+    protected static void register() {
         if (SkCheese.isSyntaxEnabled("futures"))
             Classes.registerClass(new ClassInfo<>(Future.class, "future")
                     .user("future")
@@ -63,4 +64,5 @@ public class FutureType {
                     })
             );
     }
+
 }

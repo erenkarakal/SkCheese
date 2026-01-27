@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.eren'
-version = '1.0.0'
+version = '1.7'
 
 repositories {
     mavenCentral()
@@ -50,7 +50,9 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 processResources {
-    def props = [version: version]
+    def props = [
+            version: version
+    ]
     inputs.properties props
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {

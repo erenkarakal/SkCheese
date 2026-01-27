@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LabelStorage {
+
     private static final Map<File, Map<Structure, Map<String, EffLabel>>> labels = new HashMap<>();
 
     protected static void addLabel(File scriptFile, Structure structure, String labelKey, EffLabel label) {
@@ -32,4 +33,5 @@ public class LabelStorage {
     protected static void removeScriptLabels(File scriptFile) {
         labels.remove(scriptFile);
     }
+
 }

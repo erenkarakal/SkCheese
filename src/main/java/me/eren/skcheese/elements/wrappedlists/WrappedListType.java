@@ -12,7 +12,8 @@ import java.io.StreamCorruptedException;
 import java.util.TreeMap;
 
 public class WrappedListType {
-    static {
+
+    protected static void register() {
         if (SkCheese.isSyntaxEnabled("wrapped-lists"))
             Classes.registerClass(new ClassInfo<>(WrappedList.class, "wrappedlist")
                     .user("wrappedlist")
@@ -64,4 +65,5 @@ public class WrappedListType {
                     })
             );
     }
+
 }

@@ -5,12 +5,12 @@ import ch.njol.skript.classes.Parser;
 import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
-import ch.njol.util.Pair;
 import ch.njol.yggdrasil.Fields;
 
 import java.io.StreamCorruptedException;
 
 public class PairType {
+
     protected static void register() {
         Classes.registerClass(new ClassInfo<>(Pair.class, "pair")
                 .user("pair")
@@ -25,7 +25,7 @@ public class PairType {
 
                     @Override
                     public String toString(Pair pair, int flags) {
-                        return "pair:" + pair.getFirst() + ", " + pair.getSecond();
+                        return "pair:" + pair.first() + ", " + pair.second();
                     }
 
                     @Override
@@ -36,8 +36,8 @@ public class PairType {
                     @Override
                     public Fields serialize(Pair pair) {
                         Fields fields = new Fields();
-                        fields.putObject("first", pair.getFirst());
-                        fields.putObject("second", pair.getSecond());
+                        fields.putObject("first", pair.first());
+                        fields.putObject("second", pair.second());
                         return fields;
                     }
 
@@ -64,4 +64,5 @@ public class PairType {
                 })
         );
     }
+
 }

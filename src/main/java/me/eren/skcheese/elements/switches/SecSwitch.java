@@ -3,28 +3,33 @@ package me.eren.skcheese.elements.switches;
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.util.LiteralUtils;
 import ch.njol.util.Kleenean;
-import me.eren.skcheese.SkCheese;
 import me.eren.skcheese.utils.SkriptUtil;
 import me.eren.skcheese.utils.UnlockedTrigger;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.skriptlang.skript.registration.SyntaxInfo.builder;
 
 @Name("Switch Case")
 @Description("The switch case executes one statement from multiple ones. " +
         "Thus, it is like an if-else-if ladder statement. " +
         "The switch statement is used to test the equality of a variable against several values specified in the tests cases.")
 @Since("1.0")
-@Examples("""
+@Example("""
         switch {_var}:
           case 1:
             broadcast "1"
@@ -33,12 +38,14 @@ import java.util.*;
           default:
             broadcast "neither"
         """)
-
 public class SecSwitch extends Section {
 
-    static {
-        if (SkCheese.isSyntaxEnabled("switch-cases"))
-            Skript.registerSection(SecSwitch.class, "switch %~object%");
+    protected static void register(SyntaxRegistry registry) {
+        registry.register(SyntaxRegistry.SECTION,
+                builder(SecSwitch.class)
+                        .addPattern("switch %~object%")
+                        .build()
+        );
     }
 
     private final List<SecSwitchCase> cases = new LinkedList<>();
@@ -46,7 +53,8 @@ public class SecSwitch extends Section {
     private Expression<?> input;
 
     @Override
-    public boolean init(Expression<?>[] expressions, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult, @NotNull SectionNode sectionNode, @NotNull List<TriggerItem> triggerItems) {
+    public boolean init(Expression<?>[] expressions, int matchedPattern, @NotNull Kleenean isDelayed,
+                        ParseResult parseResult, @NotNull SectionNode sectionNode, @NotNull List<TriggerItem> triggerItems) {
 
         input = LiteralUtils.defendExpression(expressions[0]);
 
@@ -99,12 +107,16 @@ public class SecSwitch extends Section {
         SecSwitchCase found = null;
 
         for (SecSwitchCase switchCase : cases) {
-            if (!switchCase.matches(value, event)) continue;
+            if (!switchCase.matches(value, event)) {
+                continue;
+            }
             found = switchCase;
             break;
         }
 
-        if (found == null) found = defaultCase;
+        if (found == null) {
+            found = defaultCase;
+        }
 
         TriggerItem.walk(found.trigger(), event);
 
@@ -116,4 +128,5 @@ public class SecSwitch extends Section {
     public @NotNull String toString(Event event, boolean debug) {
         return "switch " + input.toString(event, debug);
     }
+
 }
