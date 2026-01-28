@@ -22,6 +22,7 @@ public class StringModule implements AddonModule {
         SyntaxRegistry registry = addon.syntaxRegistry();
         ExprLastString.register(registry);
         SecNewString.register(registry);
+        ExprSecNewString.register(registry);
     }
 
 }

@@ -1,5 +1,6 @@
 package me.eren.skcheese.elements.string;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
@@ -35,6 +36,7 @@ public class ExprLastString extends SimpleExpression<String> {
 
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
+        Skript.warning("This expression is deprecated and will be removed in the future. Use 'set {_x} to new string:' instead.");
         return true;
     }
 

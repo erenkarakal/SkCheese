@@ -38,9 +38,7 @@ import java.util.regex.Pattern;
 import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
 @Name("Function Section")
-@Description("""
-        Runs a function with the specified arguments.
-        """)
+@Description("Runs a function with the specified arguments.")
 @Example("""
         local function multiply(x: number, y: number) returns number:
         	return {_x} * {_y}
@@ -85,19 +83,19 @@ public class ExprSecFunction extends SectionExpression<Object> {
         assert node != null;
 
         if (node.isEmpty()) {
-            Skript.error("A function section must contain arguments.");
+            Skript.error("A function section must contain arguments");
             return false;
         }
 
         for (Node child : node) {
             if (!(child instanceof SimpleNode) || child.getKey() == null) {
-                Skript.error(Language.get("functions.invalid argument in section"), child.getKey());
+                Skript.error("Invalid argument " + child.getKey());
                 return false;
             }
 
             Matcher matcher = ARGUMENT_PATTERN.matcher(child.getKey());
             if (!matcher.matches()) {
-                Skript.error(Language.get("functions.invalid argument in section"), child.getKey());
+                Skript.error("Invalid argument " + child.getKey());
                 return false;
             }
 
@@ -106,7 +104,7 @@ public class ExprSecFunction extends SectionExpression<Object> {
 
         String name = result.regexes.getFirst().group();
         if (!FUNCTION_NAME_PATTERN.matcher(name).matches()) {
-            Skript.error(Language.get("functions.does not exist"), name);
+            Skript.error("Function '" + name + "' doesn't exist");
             return false;
         }
 
@@ -123,7 +121,7 @@ public class ExprSecFunction extends SectionExpression<Object> {
         }
 
         if (reference.signature().returnType() == null) {
-            Skript.error(Language.get("functions.does not return"), name);
+            Skript.error("Function '" + name + "' doesn't return a value");
             return false;
         }
 

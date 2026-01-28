@@ -49,6 +49,7 @@ public class SecNewString extends Section {
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed,
                         ParseResult parseResult, SectionNode sectionNode, List<TriggerItem> triggerItems) {
+        Skript.warning("This section is deprecated and will be removed in the future. Use 'set {_x} to new string:' instead.");
         join = (Expression<String>) expressions[0];
         if (expressions[1] != null) {
             store = expressions[1];
