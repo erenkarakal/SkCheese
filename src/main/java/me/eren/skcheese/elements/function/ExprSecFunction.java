@@ -25,7 +25,7 @@ import java.util.List;
 
 import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
-@Name("Function Section")
+@Name("Run Function (Expression Section)")
 @Description("Runs a function with the specified arguments.")
 @Since("1.7")
 @Example("""

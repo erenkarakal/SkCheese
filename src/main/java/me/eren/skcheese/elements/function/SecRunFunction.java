@@ -21,16 +21,16 @@ import java.util.List;
 
 import static org.skriptlang.skript.registration.SyntaxInfo.builder;
 
-@Name("Run Function")
+@Name("Run Function (Section)")
 @Description("Executes a function using a section. Pass parameters by doing 'parameter name as value'")
 @Since("1.0 (1.7 Breaking Syntax Change)")
 @Examples("""
-        function add(1: int, 2: int) :: number:
-          return {_1} + {_2}
+        function add(1: int, 2: int):
+          broadcast {_1} + {_2}
         
-        execute function add and store it in {_result}:
-          1 as 5   # (the order of the parameters don't matter)
-          2 as 10
+        execute function add:
+          1 set to 5   # (the order of the parameters don't matter)
+          2 set to 10
         broadcast {_result} # 15
         """)
 public class SecRunFunction extends Section {
