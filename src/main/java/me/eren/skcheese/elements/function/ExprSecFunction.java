@@ -13,7 +13,6 @@ import ch.njol.skript.lang.SyntaxStringBuilder;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
-import me.eren.skcheese.SkCheese;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.common.function.FunctionReference;
@@ -41,13 +40,11 @@ import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.b
 public class ExprSecFunction extends SectionExpression<Object> {
 
     public static void register(SyntaxRegistry registry) {
-        if (SkCheese.isSyntaxEnabled("run-function-section")) {
-            registry.register(SyntaxRegistry.EXPRESSION,
-                    builder(ExprSecFunction.class, Object.class)
-                            .addPattern("[the] function <.+> with [the] arg[ument][s]")
-                            .build()
-            );
-        }
+        registry.register(SyntaxRegistry.EXPRESSION,
+                builder(ExprSecFunction.class, Object.class)
+                        .addPattern("[the] function <.+> with [the] arg[ument][s]")
+                        .build()
+        );
     }
 
     private FunctionReference<?> reference;
