@@ -58,6 +58,8 @@ public class ExprTree extends SimpleExpression<String> {
             Skript.error("You can only get the tree of a list variable.");
             return false;
         }
+
+        Skript.warning("This expression now exists in vanilla Skript. Use 'recursive %objects%' instead.");
         return true;
     }
 
