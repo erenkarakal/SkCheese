@@ -5,6 +5,7 @@ import ch.njol.skript.lang.SyntaxElement;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.eren.skcheese.elements.bits.BitModule;
+import me.eren.skcheese.elements.function.FunctionModule;
 import me.eren.skcheese.elements.labels.LabelModule;
 import me.eren.skcheese.elements.pairs.PairModule;
 import me.eren.skcheese.elements.string.StringModule;
@@ -55,7 +56,8 @@ public final class SkCheese extends JavaPlugin {
                 new StringModule(),
                 new SwitchModule(),
                 new FutureModule(),
-                new WrappedListModule()
+                new WrappedListModule(),
+                new FunctionModule()
         );
 
         loadAddon(addon);
