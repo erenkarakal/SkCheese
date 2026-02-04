@@ -23,7 +23,7 @@ import static org.skriptlang.skript.registration.SyntaxInfo.builder;
 @Description("Checks if a condition is true, otherwise throws an error or a warning with a custom message and stops the code.")
 @Example("assert {_x} is 1 with error \"{_x} should've been 1\"")
 @Example("assert {_var} > 5000 with warning \"{_var} should've been more than 5000\"")
-@Since("")
+@Since("1.7")
 public class EffAssert extends Effect implements RuntimeErrorProducer {
 
     public static void register(SyntaxRegistry registry) {

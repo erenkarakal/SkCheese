@@ -14,7 +14,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
-@Name("Reverted Boolean")
+@Name("Inverted Boolean")
 @Description("Returns the opposite of a boolean.")
 @Since("1.1")
 @Example("""
@@ -22,12 +22,12 @@ import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.b
         send "Toggled your ability!" to player
         """)
 
-public class ExprRevertedBoolean extends SimpleExpression<Boolean> {
+public class InvertedBoolean extends SimpleExpression<Boolean> {
 
     public static void register(SyntaxRegistry registry) {
-        if (SkCheese.isSyntaxEnabled("reverted-booleans")) {
+        if (SkCheese.isSyntaxEnabled("inverted-booleans")) {
             registry.register(SyntaxRegistry.EXPRESSION,
-                    builder(ExprRevertedBoolean.class, Boolean.class)
+                    builder(InvertedBoolean.class, Boolean.class)
                             .addPattern("!%boolean%")
                             .build()
             );
@@ -61,7 +61,7 @@ public class ExprRevertedBoolean extends SimpleExpression<Boolean> {
 
     @Override
     public String toString(Event event, boolean debug) {
-        return "reverted boolean " + b00lean.toString(event, debug);
+        return "inverted boolean " + b00lean.toString(event, debug);
     }
 
 }
