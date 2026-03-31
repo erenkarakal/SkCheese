@@ -12,7 +12,7 @@ import ch.njol.util.Kleenean;
 import org.bukkit.event.Event;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 
-import static ch.njol.skript.util.Timespan.TimePeriod.TICK;
+import static ch.njol.skript.util.Timespan.TimePeriod.MILLISECOND;
 import static org.skriptlang.skript.registration.DefaultSyntaxInfos.Expression.builder;
 
 @Name("Futures - New Future")
@@ -26,7 +26,7 @@ public class ExprNewFuture extends SimpleExpression<Future> {
     protected static void register(SyntaxRegistry registry) {
         registry.register(SyntaxRegistry.EXPRESSION,
                 builder(ExprNewFuture.class, Future.class)
-                        .addPattern("[new] future with %timespan% timeout")
+						.addPattern("[a] [new] future with %timespan% timeout")
                         .build()
         );
     }
@@ -44,7 +44,7 @@ public class ExprNewFuture extends SimpleExpression<Future> {
     protected Future[] get(Event event) {
         Timespan timespan = timeout.getSingle(event);
         if (timespan != null) {
-            return new Future[]{new Future(timespan.getAs(TICK))};
+			return new Future[]{new Future(timespan.getAs(MILLISECOND))};
         }
         return null;
     }
