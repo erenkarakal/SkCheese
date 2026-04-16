@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.eren'
-version = '1.7.1'
+version = '1.8-beta'
 
 repositories {
     mavenCentral()
@@ -31,7 +31,7 @@ tasks {
     }
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
