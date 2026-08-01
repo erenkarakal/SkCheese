@@ -20,7 +20,7 @@ import java.util.List;
 public class SecProfilerMarker extends Section {
 
 	public static void register(SyntaxRegistry registry) {
-		if (SkCheese.isSyntaxEnabled("profiler-markers", false)) {
+		if (SkCheese.isSyntaxEnabled("profiler-markers")) {
 			registry.register(SyntaxRegistry.SECTION, SyntaxInfo.builder(SecProfilerMarker.class)
 					.addPattern("profiler marker <.+>")
 					.build()
