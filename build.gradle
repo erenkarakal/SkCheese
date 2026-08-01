@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.eren'
-version = '1.8-beta'
+version = '1.8'
 
 repositories {
     mavenCentral()
@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    implementation('com.github.SkriptLang:Skript:2.14.0')
+    implementation('com.github.SkriptLang:Skript:2.16.0')
 }
 
 tasks {
