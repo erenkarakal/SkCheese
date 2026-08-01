@@ -63,6 +63,11 @@ public class ExprSecFunction extends SectionExpression<Object> {
         String name = result.regexes.getFirst().group();
         reference = FunctionModule.parseFunctionSection(name, node, arguments);
 
+        if (reference == null) {
+            Skript.error("Function '" + name + "' doesn't exist");
+            return false;
+        }
+
         if (reference.signature().returnType() == null) {
             Skript.error("Function '" + name + "' doesn't return a value");
             return false;
