@@ -1,5 +1,6 @@
 package me.eren.skcheese.elements.function;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.Node;
 import ch.njol.skript.config.SectionNode;
@@ -67,9 +68,10 @@ public class FunctionModule implements AddonModule {
                 return null;
             }
 
-            Matcher matcher = ARGUMENT_PATTERN.matcher(child.getKey());
+            String key = ScriptLoader.replaceOptions(child.getKey());
+            Matcher matcher = ARGUMENT_PATTERN.matcher(key);
             if (!matcher.matches()) {
-                Skript.error("Invalid argument " + child.getKey());
+                Skript.error("Invalid argument " + key);
                 return null;
             }
 
